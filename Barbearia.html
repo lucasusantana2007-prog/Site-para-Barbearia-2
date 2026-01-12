@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barbearia O Bigode | Lisboa</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Rye&family=Roboto+Slab:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CSS: DESIGN RETRO & GERAL --- */
+        :root {
+            --bg-dark: #1a1a1a;
+            --bg-paper: #f4e4bc; /* Tom creme envelhecido */
+            --accent-gold: #d4af37;
+            --text-main: #2c2c2c;
+            --text-light: #f4e4bc;
+            --font-head: 'Rye', serif;
+            --font-body: 'Roboto Slab', serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* Listra de Barbeiro no topo */
+        .barber-stripe {
+            height: 10px; width: 100%;
+            background: repeating-linear-gradient(45deg, #c0392b, #c0392b 20px, #f5f5f5 20px, #f5f5f5 40px, #2980b9 40px, #2980b9 60px, #f5f5f5 60px, #f5f5f5 80px);
+            position: absolute; top: 0; z-index: 1000;
+        }
+
+        /* Header Fixo no Topo (não rola) */
+        header {
+            background-color: #1a1a1a;
+            padding: 2rem 0;
+            text-align: center;
+            border-bottom: 2px solid var(--accent-gold);
+            position: relative; 
+            z-index: 900;
+        }
+
+        h1 { font-family: var(--font-head); font-size: 3rem; color: var(--accent-gold); text-shadow: 2px 2px 4px #000; letter-spacing: 2px; }
+
+        nav ul { list-style: none; margin-top: 1rem; }
+        nav ul li { display: inline-block; margin: 0 15px; }
+        nav a { text-decoration: none; color: var(--text-light); font-weight: bold; text-transform: uppercase; transition: color 0.3s; }
+        nav a:hover { color: var(--accent-gold); }
+
+        /* Hero Section */
+        .hero {
+            height: 80vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1585747860715-2ba37e788b70?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover; background-position: center;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+        }
+
+        .hero h2 { font-family: var(--font-head); font-size: 2.5rem; margin-bottom: 1rem; color: #fff; }
+
+        .btn-retro {
+            background-color: var(--accent-gold); color: var(--bg-dark); padding: 15px 30px;
+            text-decoration: none; font-weight: bold; border: 2px solid var(--accent-gold);
+            text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; cursor: pointer;
+            margin-top: 20px; display: inline-block;
+        }
+        .btn-retro:hover { background-color: transparent; color: var(--accent-gold); }
+
+        section { padding: 4rem 2rem; max-width: 1200px; margin: 0 auto; }
+        .section-title { text-align: center; font-family: var(--font-head); font-size: 2.5rem; margin-bottom: 3rem; color: var(--accent-gold); position: relative; }
+        .section-title::after { content: "✂"; display: block; font-size: 1.5rem; margin-top: 10px; color: #fff; }
+
+        /* Carrossel */
+        .carousel-container { position: relative; max-width: 900px; margin: 0 auto; border: 5px solid var(--accent-gold); overflow: hidden; }
+        .carousel-slide { display: none; width: 100%; }
+        .carousel-slide img { width: 100%; height: 500px; object-fit: cover; filter: sepia(30%) contrast(1.1); }
+        .fade { animation-name: fade; animation-duration: 1.5s; }
+        @keyframes fade { from {opacity: .4} to {opacity: 1} }
+        .prev, .next { cursor: pointer; position: absolute; top: 50%; width: auto; padding: 16px; margin-top: -22px; color: white; font-weight: bold; font-size: 18px; transition: 0.6s ease; background-color: rgba(0,0,0,0.5); user-select: none; }
+        .next { right: 0; }
+        .prev:hover, .next:hover { background-color: var(--accent-gold); color: var(--bg-dark); }
+
+        /* --- TABELA DE PREÇOS (CARDÁPIO) --- */
+        .prices-container { background-color: var(--bg-paper); color: var(--text-main); padding: 3rem; border-radius: 5px; border: 1px solid #c7b299; }
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; } /* Duas colunas */
+        
+        .menu-category h3 { 
+            font-family: var(--font-head); color: #8b0000; border-bottom: 2px solid #2c2c2c; 
+            margin-bottom: 1.5rem; text-transform: uppercase; font-size: 1.5rem;
+        }
+        
+        .price-item { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem; }
+        .price-name { font-weight: bold; font-size: 1.1rem; background-color: var(--bg-paper); padding-right: 5px; z-index: 2; }
+        .price-dots { flex-grow: 1; border-bottom: 2px dotted var(--text-main); position: relative; top: -5px; opacity: 0.5; margin: 0 5px; }
+        .price-value { font-weight: bold; font-size: 1.1rem; background-color: var(--bg-paper); padding-left: 5px; color: #8b0000; }
+
+        /* --- FORMULÁRIO (MULTI-SELECT) --- */
+        .booking-form { background-color: #252525; padding: 3rem; border: 1px solid var(--accent-gold); max-width: 700px; margin: 0 auto; }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; color: var(--accent-gold); }
+        
+        input[type="text"], input[type="tel"], input[type="datetime-local"] { 
+            width: 100%; padding: 10px; background-color: #333; border: 1px solid #555; color: #fff; 
+            font-family: var(--font-body); font-size: 1rem; 
+        }
+        input:focus { outline: none; border-color: var(--accent-gold); }
+
+        /* Grid de Checkboxes */
+        .services-wrapper {
+            background-color: #333; padding: 15px; border: 1px solid #555;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+        }
+        .checkbox-label { display: flex; align-items: center; color: #fff; font-size: 0.9rem; cursor: pointer; }
+        .checkbox-label input { width: auto; margin-right: 10px; accent-color: var(--accent-gold); transform: scale(1.2); }
+        .checkbox-label:hover { color: var(--accent-gold); }
+        
+        .category-separator {
+            grid-column: 1 / -1; color: var(--accent-gold); font-size: 0.8rem; text-transform: uppercase;
+            border-bottom: 1px solid #555; padding-bottom: 5px; margin-top: 15px; font-weight: bold;
+        }
+        .category-separator:first-child { margin-top: 0; }
+
+        /* --- ADMIN & FOOTER --- */
+        footer { background-color: #000; text-align: center; padding: 2rem; border-top: 2px solid var(--accent-gold); margin-top: 4rem; }
+        .admin-link { color: #333; text-decoration: none; font-size: 0.8rem; margin-top: 20px; display: inline-block; cursor: pointer; }
+        
+        /* Modal & Admin Table */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); justify-content: center; align-items: center; }
+        .modal-content { background-color: #252525; border: 2px solid var(--accent-gold); padding: 2rem; width: 300px; text-align: center; border-radius: 5px; }
+        .close-modal { color: #aaa; float: right; font-size: 28px; cursor: pointer; }
+        
+        #adminPanel { display: none; padding: 4rem 2rem; background-color: #1a1a1a; border-top: 5px solid #8b0000; }
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 20px; background-color: #f4e4bc; color: #2c2c2c; }
+        .admin-table th, .admin-table td { border: 1px solid #c7b299; padding: 12px; text-align: left; }
+        .admin-table th { background-color: #d4af37; color: #1a1a1a; font-family: var(--font-head); }
+        .btn-delete { background-color: #8b0000; color: white; border: none; padding: 5px 10px; cursor: pointer; }
+
+        @media (max-width: 768px) {
+            .menu-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .services-wrapper { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="barber-stripe"></div>
+
+    <header id="home">
+        <h1>O BIGODE</h1>
+        <p>BARBEARIA TRADICIONAL & WHISKY</p>
+        <nav>
+            <ul>
+                <li><a href="#galeria">Galeria</a></li>
+                <li><a href="#precos">Menu Completo</a></li>
+                <li><a href="#agenda">Agendar</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h2>Cavalheiros, bem-vindos.</h2>
+        <p>A melhor experiência de Lisboa.</p>
+        <a href="#agenda" class="btn-retro">Marcar Horário</a>
+    </section>
+
+    <section id="galeria">
+        <h2 class="section-title">A Nossa Arte</h2>
+        <div class="carousel-container">
+            <div class="carousel-slide fade" style="display: block;"><img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Interior"></div>
+            <div class="carousel-slide fade"><img src="https://img.freepik.com/fotos-premium/jovem-asiatico-sendo-cortado-de-cabelo-comprido-para-cabelo-curto-com-maquina-de-tosquia-eletrica-por-barbeiro-profissional-na-barbearia_7186-3186.jpg" alt="Barba"></div>
+            <div class="carousel-slide fade"><img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Degrade"></div>
+            <div class="carousel-slide fade"><img src="https://images.unsplash.com/photo-1532710093739-9470acff878f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Toalha Quente"></div>
+            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>
+        </div>
+    </section>
+
+    <section id="precos">
+        <h2 class="section-title">Menu de Serviços</h2>
+        <div class="prices-container">
+            <div class="menu-grid">
+                
+                <div class="menu-category">
+                    <h3>Cabelo & Barba</h3>
+                    <div class="price-item"><span class="price-name">Corte Clássico (Tesoura)</span><span class="price-dots"></span><span class="price-value">15,00 €</span></div>
+                    <div class="price-item"><span class="price-name">Degradê / Fade</span><span class="price-dots"></span><span class="price-value">18,00 €</span></div>
+                    <div class="price-item"><span class="price-name">Skin Fade (Navalha)</span><span class="price-dots"></span><span class="price-value">20,00 €</span></div>
+                    <div class="price-item"><span class="price-name">Corte Máquina</span><span class="price-dots"></span><span class="price-value">12,00 €</span></div>
+                    <div class="price-item"><span class="price-name">Corte de Criança</span><span class="price-dots"></span><span class="price-value">12,00 €</span></div>
+                    <div class="price-item"><span class="price-name">Barba Completa (Ritual)</span><span class="price-dots"></span><span class="price-value">12,00 €</span></div>
+                    <div class="price-item"><span class="price-name">Barba Express</span><span class="price-dots"></span><span class="price-value">8,00 €</span></div>
+                    <div class="price-item"><span class="price-name">Pigmentação Barba</span><span class="price-dots"></span><span class="price-value">10,00 €</span></div>
+                </div>
+
+                <div class="menu-category">
+                    <h3>Tratamentos & Produtos</h3>
+                    <div class="price-item"><span class="price-name">Sobrancelha</span><span class="price-dots"></span><span class="price-value">5,00 €</span></div>
+                    <div class="price-item"><span class="price-name">Limpeza de Pele</span><span class="price-dots"></span><span class="price-value">15,00 €</span></div>
+                    <div class="price-item"><span class="price-name">Platinado Global</span><span class="price-dots"></span><span class="price-value">50,00 €</span></div>
+                    <div class="price-item"><span class="price-name">Relaxamento Capilar</span><span class="price-dots"></span><span class="price-value">30,00 €</span></div>
+                    
+                    <br> <div class="price-item"><span class="price-name">Pomada (Mate/Brilho)</span><span class="price-dots"></span><span class="price-value">15,00 €</span></div>
+                    <div class="price-item"><span class="price-name">Óleo de Barba</span><span class="price-dots"></span><span class="price-value">18,00 €</span></div>
+                    <div class="price-item"><span class="price-name">Tónico Capilar</span><span class="price-dots"></span><span class="price-value">20,00 €</span></div>
+                    <div class="price-item"><span class="price-name">Shampoo Premium</span><span class="price-dots"></span><span class="price-value">15,00 €</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="agenda">
+        <h2 class="section-title">Agende o seu Horário</h2>
+        <form class="booking-form" id="bookingForm">
+            <div class="form-group">
+                <label for="name">Nome do Cavalheiro:</label>
+                <input type="text" id="name" required placeholder="Ex: João Ferreira">
+            </div>
+            <div class="form-group">
+                <label for="phone">Telemóvel:</label>
+                <input type="tel" id="phone" required placeholder="+351 9xx xxx xxx">
+            </div>
+            
+            <div class="form-group">
+                <label>Selecione os Serviços:</label>
+                <div class="services-wrapper">
+                    
+                    <div class="category-separator">Cortes de Cabelo</div>
+                    <label class="checkbox-label"><input type="checkbox" name="services" value="Corte Clássico (15€)"> Corte Clássico</label>
+                    <label class="checkbox-label"><input type="checkbox" name="services" value="Degradê Fade (18€)"> Degradê / Fade</label>
+                    <label class="checkbox-label"><input type="checkbox" name="services" value="Skin Fade (20€)"> Skin Fade Navalha</label>
+                    <label class="checkbox-label"><input type="checkbox" name="services" value="Máquina (12€)"> Corte Máquina</label>
+                    <label class="checkbox-label"><input type="checkbox" name="services" value="Criança (12€)"> Corte de Criança</label>
+                    
+                    <div class="category-separator">Barba & Bigode</div>
+                    <label class="checkbox-label"><input type="checkbox" name="services" value="Barba Completa (12€)"> Barba (Toalha Quente)</label>
+                    <label class="checkbox-label"><input type="checkbox" name="services" value="Barba Express (8€)"> Barba Express</label>
+                    <label class="checkbox-label"><input type="checkbox" name="services" value="Pigmentação (10€)"> Pigmentação</label>
+                    
+                    <div class="category-separator">Tratamentos & Química</div>
+                    <label class="checkbox-label"><input type="checkbox" name="services" value="Sobrancelha (5€)"> Sobrancelha</label>
+                    <label class="checkbox-label"><input type="checkbox" name="services" value="Limpeza Pele (15€)"> Limpeza de Pele</label>
+                    <label class="checkbox-label"><input type="checkbox" name="services" value="Platinado (50€)"> Platinado</label>
+                    <label class="checkbox-label"><input type="checkbox" name="services" value="Relaxamento (30€)"> Relaxamento</label>
+                    
+                    <div class="category-separator">Adicionar Produtos</div>
+                    <label class="checkbox-label"><input type="checkbox" name="services" value="Pomada (15€)"> Pomada</label>
+                    <label class="checkbox-label"><input type="checkbox" name="services" value="Óleo (18€)"> Óleo de Barba</label>
+                    <label class="checkbox-label"><input type="checkbox" name="services" value="Tónico (20€)"> Tónico Capilar</label>
+                </div>
+                <small style="color: #888; display:block; margin-top:5px;">* Pode selecionar mais de uma opção.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="date">Data e Hora:</label>
+                <input type="datetime-local" id="date" required>
+            </div>
+            <button type="submit" class="btn-retro" style="width: 100%;">Confirmar Marcação</button>
+        </form>
+    </section>
+
+    <div id="adminPanel">
+        <h2 class="section-title">Painel do Barbeiro</h2>
+        <p style="text-align:center; margin-bottom: 20px; color: #fff;">Lista de marcações confirmadas.</p>
+        <div style="overflow-x:auto;">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Serviços Escolhidos</th>
+                        <th>Data/Hora</th>
+                        <th>Contacto</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="appointmentsList"></tbody>
+            </table>
+        </div>
+        <button onclick="logout()" class="btn-retro" style="margin-top:20px; background-color: #8b0000; border-color: #8b0000; color: white;">Sair do Sistema</button>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Barbearia O Bigode - Portugal.</p>
+        <p>Avenida da Liberdade, 000 - Lisboa</p>
+        <span class="admin-link" onclick="openLoginModal()">🔒 Acesso Reservado</span>
+    </footer>
+
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeLoginModal()">&times;</span>
+            <h3 style="color:var(--accent-gold); margin-bottom:15px;">Área do Barbeiro</h3>
+            <input type="password" id="adminPass" placeholder="Palavra-passe">
+            <button onclick="checkLogin()" class="btn-retro" style="margin-top:15px;">Entrar</button>
+        </div>
+    </div>
+
+    <script>
+        // Carrossel
+        let slideIndex = 1;
+        showSlides(slideIndex);
+        function plusSlides(n) { showSlides(slideIndex += n); }
+        function showSlides(n) {
+            let i; let slides = document.getElementsByClassName("carousel-slide");
+            if (n > slides.length) {slideIndex = 1}
+            if (n < 1) {slideIndex = slides.length}
+            for (i = 0; i < slides.length; i++) { slides[i].style.display = "none"; }
+            slides[slideIndex-1].style.display = "block";
+        }
+        setInterval(() => { plusSlides(1); }, 5000);
+
+        // Agendamento Multi-Select
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Coletar Checkboxes Marcados
+            const checkboxes = document.querySelectorAll('input[name="services"]:checked');
+            let selectedServices = [];
+            
+            checkboxes.forEach((checkbox) => {
+                selectedServices.push(checkbox.value);
+            });
+
+            if (selectedServices.length === 0) {
+                alert("Por favor, selecione pelo menos um serviço.");
+                return;
+            }
+
+            const servicesString = selectedServices.join(", ");
+
+            const appointment = {
+                id: Date.now(),
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                service: servicesString,
+                date: document.getElementById('date').value
+            };
+
+            let appointments = JSON.parse(localStorage.getItem('barberAppointments') || '[]');
+            appointments.push(appointment);
+            localStorage.setItem('barberAppointments', JSON.stringify(appointments));
+
+            alert(`Marcação confirmada para ${appointment.name}!\nServiços: ${appointment.service}`);
+            this.reset();
+            
+            if(document.getElementById('adminPanel').style.display === 'block') {
+                renderAppointments();
+            }
+        });
+
+        // Admin
+        function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
+        function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
+        function checkLogin() {
+            const pass = document.getElementById('adminPass').value;
+            if (pass === 'admin') {
+                closeLoginModal();
+                document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('adminPanel').scrollIntoView({behavior: 'smooth'});
+                renderAppointments();
+            } else { alert('Palavra-passe incorreta.'); }
+        }
+        function logout() {
+            document.getElementById('adminPanel').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        function renderAppointments() {
+            const list = document.getElementById('appointmentsList');
+            const appointments = JSON.parse(localStorage.getItem('barberAppointments') || '[]');
+            list.innerHTML = '';
+            if (appointments.length === 0) { list.innerHTML = '<tr><td colspan="5" style="text-align:center">Nenhuma marcação encontrada.</td></tr>'; return; }
+            appointments.sort((a, b) => new Date(a.date) - new Date(b.date));
+            appointments.forEach(app => {
+                const dateFormatted = new Date(app.date).toLocaleString('pt-PT');
+                list.innerHTML += `
+                    <tr><td>${app.name}</td>
+                    <td>${app.service}</td>
+                    <td>${dateFormatted}</td><td>${app.phone}</td>
+                    <td><button class="btn-delete" onclick="deleteAppointment(${app.id})">Concluir</button></td></tr>`;
+            });
+        }
+        window.deleteAppointment = function(id) {
+            if(confirm('Finalizar este atendimento?')) {
+                let appointments = JSON.parse(localStorage.getItem('barberAppointments') || '[]');
+                appointments = appointments.filter(app => app.id !== id);
+                localStorage.setItem('barberAppointments', JSON.stringify(appointments));
+                renderAppointments();
+            }
+        }
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('loginModal')) { closeLoginModal(); }
+        }
+    </script>
+</body>
+</html>
